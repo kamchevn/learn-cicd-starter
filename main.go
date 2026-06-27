@@ -36,9 +36,8 @@ func main() {
 	if port == "" {
 		log.Fatal("PORT environment variable is not set")
 	}
-	port := os.Getenv("PORT")
 
-	if _, err = strconv.Atoi(port); err != nil {
+	if _, err := strconv.Atoi(port); err != nil {
 		log.Fatal("PORT must be numeric")
 	}
 
