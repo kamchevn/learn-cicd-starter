@@ -3,13 +3,13 @@ package main
 import (
 	"database/sql"
 	"embed"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-	"fmt"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -97,7 +97,7 @@ func main() {
 
 	router.Mount("/v1", v1Router)
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%d", portNum),
+		Addr:              fmt.Sprintf(":%d", portNum),
 		Handler:           router,
 		ReadHeaderTimeout: 5 * time.Second,
 	}
