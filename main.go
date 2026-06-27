@@ -38,7 +38,7 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 
-	if _, err := strconv.Atoi(port); err != nil {
+	if _, err = strconv.Atoi(port); err != nil {
 		log.Fatal("PORT must be numeric")
 	}
 
