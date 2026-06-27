@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"fmt"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -37,7 +38,8 @@ func main() {
 		log.Fatal("PORT environment variable is not set")
 	}
 
-	if _, err := strconv.Atoi(port); err != nil {
+	portNum, err := strconv.Atoi(port)
+	if err != nil {
 		log.Fatal("PORT must be numeric")
 	}
 
@@ -95,11 +97,11 @@ func main() {
 
 	router.Mount("/v1", v1Router)
 	srv := &http.Server{
-		Addr:              ":" + port,
+		Addr: fmt.Sprintf(":%d", portNum),
 		Handler:           router,
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	log.Println("Serving on port:", port)
+	log.Println("Serving on port:", portNum)
 	log.Fatal(srv.ListenAndServe())
 }
