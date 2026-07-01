@@ -30,10 +30,33 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker image
-        run: docker build -t notely .
+        run: docker build --platform linux/amd64 -t .
 
       - name: Tag image
         run: docker tag notely:latest ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_DOCKER_REPO_NAME }}:latest
 
       - name: Push image
         run: docker push ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_DOCKER_REPO_NAME }}:latest
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+          --task-definition notely-task-definition \
+          --query taskDefinition \
+          > task-definition.json
+
+      - name: Render ECS task definition
+        id: render-task
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: notely-container
+          image: ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_DOCKER_REPO_NAME }}:latest
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task.outputs.task-definition }}
+          service: notely-task-definition-service-wy1w01ds
+          cluster: notely-cluster
+          wait-for-service-stability: true
