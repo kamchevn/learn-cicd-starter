@@ -30,7 +30,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker image
-        run: docker build --platform linux/amd64 -t .
+        run: docker build --platform linux/amd64 -t notely:latest .
 
       - name: Tag image
         run: docker tag notely:latest ${{ secrets.AWS_ECR_URI }}/${{ secrets.AWS_DOCKER_REPO_NAME }}:latest
